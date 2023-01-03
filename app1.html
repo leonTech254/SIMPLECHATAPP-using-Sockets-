@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./style.css">
     <script src="./socketLib.js"></script>
+    <link rel="stylesheet" href="./style.css">
     <title>Document</title>
 </head>
 
@@ -19,15 +19,15 @@
 
         </div>
         <div class="send-container">
-            <input type="text" id="message">
+            <input type="text" id="message" placeholder="write message">
             <button onclick="SendMessage()">send</button>
         </div>
     </div>
-   
+
 
     <script>
-        
-    let message_send = document.getElementById("message");
+
+        let message_send = document.getElementById("message");
         //conneting to the server 
         var socket = io.connect("http://127.0.0.1:5000")
 
@@ -35,32 +35,30 @@
             socket.emit("my event", { "message": "hellllo i am connected" })
         })
 
-        message_send.addEventListener('input',()=>{
-            socket.emit("typing",{"user":"martin"})
+        message_send.addEventListener('input', () => {
+            socket.emit("typing", { "user": "martin" })
         })
-     
-       function clearTyping()
-       {
-          let clearTyping = setTimeout(() => {
-               let checktyping = document.querySelector(".checktyping")
-               checktyping.innerHTML = ""
-           }, 3000)
-       }
-    
+
+        function clearTyping() {
+            let clearTyping = setTimeout(() => {
+                let checktyping = document.querySelector(".checktyping")
+                checktyping.innerHTML = ""
+            }, 3000)
+        }
 
 
-        socket.on("typer",(data)=>{
-            if(data.user!="martin")
-            {
-               let checktyping = document.querySelector(".checktyping")
-                checktyping.innerHTML= data.user +" typing..."
+
+        socket.on("typer", (data) => {
+            if (data.user != "martin") {
+                let checktyping = document.querySelector(".checktyping")
+                checktyping.innerHTML = data.user + " typing..."
                 clearTyping()
 
 
             }
 
         })
-    
+
 
 
 

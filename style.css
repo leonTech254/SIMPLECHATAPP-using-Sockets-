@@ -18,28 +18,37 @@
        background-color: black;
        margin: auto;
        position: relative;
+       overflow-y: auto;
+       word-wrap: break-word;
 
    }
 
    .message {
        display: block;
-       margin-bottom: 1.8rem;
+       margin-bottom: 1.5rem;
 
    }
 
    .me {
        text-align: right;
+      
+   }
+   .me span
+   {
+    background-color: rebeccapurple;
    }
 
    .friend {
        text-align: left;
    }
-
+.friend span
+{
+    background-color: red;
+}
    .message span {
        border: 1px solid green;
        padding: 10px;
        padding-left: 10px;
-
    }
 
    .title h2 {
