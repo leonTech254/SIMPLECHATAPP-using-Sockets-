@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./socketLib.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="chat-container">
+        <div class="title">
+            <h2>Simple chat app</h2>
+        </div>
+        <div class="checktyping">
+
+        </div>
+        <div class="send-container">
+            <input type="text" id="message">
+            <button onclick="SendMessage()">send</button>
+        </div>
+    </div>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        *+* {
+            margin-bottom: .5rem;
+        }
+
+        body {
+            color: white;
+        }
+
+        .chat-container {
+            width: 20rem;
+            height: 30rem;
+            background-color: black;
+            margin: auto;
+            position: relative;
+
+        }
+
+        .message {
+            display: block;
+            margin-bottom: 1.8rem;
+
+        }
+
+        .me {
+            text-align: right;
+        }
+
+        .friend {
+            text-align: left;
+        }
+
+        .message span {
+            border: 1px solid green;
+            padding: 10px;
+            padding-left: 10px;
+
+        }
+
+        .title h2 {
+            padding-bottom: 1.5rem;
+            background-color: orangered;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .send-container {
+            position: absolute;
+            bottom: 0;
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            align-items: center;
+
+        }
+
+        .send-container input {
+            background: none;
+            border: 1px solid green;
+            width: 70%;
+            padding: 5px;
+            margin: 0;
+            color: wheat;
+        }
+
+        .send-container input:focus {
+            outline: none;
+        }
+
+        .send-container button {
+            width: 30%;
+            padding: 5px;
+            background: none;
+            color: white;
+            text-transform: uppercase;
+            font-weight: bold;
+            margin: 0;
+        }
+        .checktyping
+        {
+            color: green;
+            font-weight: bolder;
+
+        }
+    </style>
+
+    <script>
+        
+    let message_send = document.getElementById("message");
+        //conneting to the server 
+        var socket = io.connect("http://127.0.0.1:5000")
+
+        socket.on('connect', () => {
+            socket.emit("my event", { "message": "hellllo i am connected" })
+        })
+
+        message_send.addEventListener('input',()=>{
+            socket.emit("typing",{"user":"martin"})
+        })
+     
+       function clearTyping()
+       {
+          let clearTyping = setTimeout(() => {
+               let checktyping = document.querySelector(".checktyping")
+               checktyping.innerHTML = ""
+           }, 3000)
+       }
+    
+
+
+        socket.on("typer",(data)=>{
+            if(data.user!="martin")
+            {
+               let checktyping = document.querySelector(".checktyping")
+                checktyping.innerHTML= data.user +" typing..."
+                clearTyping()
+
+
+            }
+
+        })
+    
+
+
+
+
+
+
+
+        socket.on("received", (data) => {
+            let messages_con = document.querySelector(".chat-container")
+            let message_con = document.createElement("div")
+            let message = document.createElement("span")
+
+
+            message_con.classList.add("message")
+            if (data.sender == "martin") {
+
+                message_con.classList.add("me")
+            } else {
+                message_con.classList.add("friend")
+            }
+            message.innerHTML = data.message
+            message_con.appendChild(message)
+            messages_con.appendChild(message_con)
+
+        })
+
+        function SendMessage() {
+            let message_send = document.getElementById("message").value;
+            socket.emit("message", { "message": message_send, "sender": "martin" })
+        }
+
+
+
+
+
+    </script>
+</body>
+
+</html>
